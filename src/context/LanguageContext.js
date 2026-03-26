@@ -60,6 +60,17 @@ export const LanguageProvider = ({ children }) => {
     return typeof value === 'string' ? value : key;
   }, [language, isReady]);
 
+  const changeLanguage = React.useCallback(async (lang) => {
+    if (translations[lang]) {
+      try {
+        await AsyncStorage.setItem('language', lang);
+        setLanguage(lang);
+      } catch (error) {
+        console.error('Error saving language:', error);
+      }
+    }
+  }, []);
+
   const value = React.useMemo(() => ({
     language,
     changeLanguage,
@@ -96,17 +107,6 @@ export const LanguageProvider = ({ children }) => {
       setIsReady(true);
     }
   };
-
-  const changeLanguage = React.useCallback(async (lang) => {
-    if (translations[lang]) {
-      try {
-        await AsyncStorage.setItem('language', lang);
-        setLanguage(lang);
-      } catch (error) {
-        console.error('Error saving language:', error);
-      }
-    }
-  }, []);
 
   return (
     <LanguageContext.Provider value={value}>
